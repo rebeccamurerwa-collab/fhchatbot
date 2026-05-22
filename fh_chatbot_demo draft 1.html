@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fortify Health — Programme Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0097A7;
+    --teal-light: #e0f5f7;
+    --teal-mid: #b2e8ed;
+    --coral: #DC6051;
+    --coral-light: #fdf0ee;
+    --green: #13A965;
+    --navy: #1F497D;
+    --blue-light: #4BACC6;
+    --offwhite: #EEECE1;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --border: #ddd8cc;
+    --shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--offwhite);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--white);
+    border-bottom: 2px solid var(--teal);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,151,167,0.08);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--teal);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo-mark svg { width: 20px; height: 20px; }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .logo-text span:first-child {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--coral);
+    letter-spacing: -0.01em;
+  }
+
+  .logo-text span:last-child {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .header-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--teal);
+    background: var(--teal-light);
+    border: 1px solid var(--teal-mid);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+
+  /* LAYOUT */
+  .app {
+    display: flex;
+    flex: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 0;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .sidebar-section h3 {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .topic-chip {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 11px;
+    color: var(--text);
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .topic-chip:hover {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    color: var(--teal);
+    transform: translateX(2px);
+  }
+
+  .topic-chip .chip-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: var(--offwhite);
+    border-radius: 4px;
+    text-align: center;
+    line-height: 18px;
+    font-size: 10px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .disclaimer {
+    background: var(--coral-light);
+    border: 1px solid #f5cdc8;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--coral);
+    line-height: 1.5;
+  }
+
+  /* CHAT AREA */
+  .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 0;
+    min-width: 0;
+  }
+
+  .chat-window {
+    flex: 1;
+    background: var(--white);
+    border-radius: 16px 16px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    min-height: 0;
+    height: calc(100vh - 60px - 48px);
+  }
+
+  .chat-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--offwhite);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    flex-shrink: 0;
+  }
+
+  .bot-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--teal), var(--blue-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .bot-info .bot-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .bot-info .bot-status {
+    font-size: 11px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .bot-info .bot-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .msg {
+    display: flex;
+    gap: 10px;
+    max-width: 88%;
+    animation: fadeUp 0.25s ease-out;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .msg.bot .msg-avatar {
+    background: linear-gradient(135deg, var(--teal), var(--blue-light));
+  }
+
+  .msg.user .msg-avatar {
+    background: var(--navy);
+    color: white;
+    font-weight: 600;
+    font-size: 11px;
+  }
+
+  .msg-bubble {
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .msg.bot .msg-bubble {
+    background: var(--offwhite);
+    border-radius: 4px 14px 14px 14px;
+    border: 1px solid var(--border);
+  }
+
+  .msg.user .msg-bubble {
+    background: var(--teal);
+    color: white;
+    border-radius: 14px 4px 14px 14px;
+  }
+
+  .msg-bubble p { margin-bottom: 8px; }
+  .msg-bubble p:last-child { margin-bottom: 0; }
+  .msg-bubble strong { font-weight: 600; }
+
+  .msg-bubble .flag-notice {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: var(--coral-light);
+    border: 1px solid #f5cdc8;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--coral);
+  }
+
+  .typing-indicator {
+    display: flex;
+    gap: 10px;
+    align-self: flex-start;
+    animation: fadeUp 0.25s ease-out;
+  }
+
+  .typing-dots {
+    background: var(--offwhite);
+    border: 1px solid var(--border);
+    border-radius: 4px 14px 14px 14px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .typing-dots span {
+    width: 6px;
+    height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+    40% { transform: scale(1.2); opacity: 1; }
+  }
+
+  /* INPUT AREA */
+  .input-area {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+  }
+
+  #userInput {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--text);
+    background: var(--offwhite);
+    resize: none;
+    outline: none;
+    transition: border-color 0.15s;
+    min-height: 40px;
+    max-height: 100px;
+  }
+
+  #userInput:focus {
+    border-color: var(--teal);
+    background: white;
+  }
+
+  #userInput::placeholder { color: #aaa; }
+
+  .send-btn {
+    width: 40px;
+    height: 40px;
+    background: var(--teal);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { background: #007b8a; transform: scale(1.05); }
+  .send-btn:active { transform: scale(0.96); }
+  .send-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+  .send-btn svg { width: 16px; height: 16px; }
+
+  /* WELCOME */
+  .welcome-card {
+    background: linear-gradient(135deg, var(--teal-light), var(--white));
+    border: 1px solid var(--teal-mid);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 4px;
+  }
+
+  .welcome-card h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    color: var(--teal);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  .welcome-card p {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .chat-area { padding: 12px 12px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2L12.5 7H17.5L13.5 10.5L15 16L10 13L5 16L6.5 10.5L2.5 7H7.5L10 2Z" fill="white" opacity="0.9"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span>Fortify Health</span>
+      <span>Programme Assistant</span>
+    </div>
+  </div>
+  <div class="header-badge">Demo v1.0</div>
+</header>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>State Partnerships</h3>
+      <button class="topic-chip" onclick="askQuestion('What are the recommended daily allowances (RDA) of iron, vitamin B12, and folate for different population groups?')">
+        1. What are the recommended daily allowances (RDA) of iron, vitamin B12, and folate for different population groups?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('What are the risks of over-consuming iron through fortified atta or iron-rich foods?')">
+        2. What are the risks of over-consuming iron through fortified atta or iron-rich foods?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('Are there safety concerns with long-term consumption of fortified staples by children?')">
+        3. Are there safety concerns with long-term consumption of fortified staples by children?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('What is the cumulative impact of multiple fortified staples, and how can systems align for implementation?')">
+        4. What is the cumulative impact of multiple fortified staples, and how can systems align for implementation?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('What is the cost of fortifying wheat flour, and how cost-effective is it?')">
+        5. What is the cost of fortifying wheat flour, and how cost-effective is it?
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Programme — Millers</h3>
+      <button class="topic-chip" onclick="askQuestion('What is the demand for this product and how many other mills are doing this in the region?')">
+        1. What is the demand for this product and how many other mills are doing this in the region?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('What is the support given by FH in terms of finance and equipment?')">
+        2. What is the support given by FH in terms of finance and equipment?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('For how long will FH provide financial and other support?')">
+        3. For how long will FH provide financial and other support?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('What are the FH benefits in this operation?')">
+        4. What are the FH benefits in this operation?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('Will FH purchase this atta after fortification or is it a third-party manufacturing arrangement?')">
+        5. Will FH purchase this atta after fortification or is it a third-party manufacturing arrangement?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('From where does FH get funds and for how long can it support our fortification operation?')">
+        6. From where does FH get funds and for how long can it support our fortification operation?
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Quality — Millers</h3>
+      <button class="topic-chip" onclick="askQuestion('Will fortification affect atta quality, shelf life, colour, taste, and customer acceptance?')">
+        1. Will fortification affect atta quality, shelf life, colour, taste, and customer acceptance?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('What actions should be taken if fortified atta fails quality parameters or customer complaints arise, and how will FH help?')">
+        2. What actions should be taken if fortified atta fails quality parameters or customer complaints arise, and how will FH help?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('Why is fortification important, is it mandatory, and what are the acceptable fortification limits and testing requirements?')">
+        3. Why is fortification important, is it mandatory, and what are the acceptable fortification limits and testing requirements?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('What support will be provided for maintaining fortification quality compliance?')">
+        4. What support will be provided for maintaining fortification quality compliance?
+      </button>
+      <button class="topic-chip" onclick="askQuestion('How will FH ensure the consistency of quality and enough quantity supply of premix?')">
+        5. How will FH ensure the consistency of quality and enough quantity supply of premix?
+      </button>
+    </div>
+
+    <div style="margin-top:auto; padding-top:12px;">
+      <button onclick="downloadPDF()" style="width:100%;padding:10px 0;background:var(--coral);color:white;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background 0.15s;" onmouseover="this.style.background='#c0503f'" onmouseout="this.style.background='var(--coral)'">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1v9M4 7l3.5 3.5L11 7M2 13h11" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download Q&amp;A Summary (PDF)
+      </button>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Internal use only.</strong> Answers drawn from the FH FAQ document. Questions outside scope are flagged to the team.
+    </div>
+  </aside>
+
+  <main class="chat-area">
+    <div class="chat-window">
+      <div class="chat-header">
+        <div class="bot-avatar">🌾</div>
+        <div class="bot-info">
+          <div class="bot-name">FH Programme Assistant</div>
+          <div class="bot-status">Online</div>
+        </div>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="welcome-card">
+          <h2>Welcome to the Fortify Health Programme Assistant</h2>
+          <p>Ask me anything about FH's work — from anaemia and fortification to our mill partnerships, government programmes, monitoring and funding. I'll give you standardised, accurate answers drawn from FH's FAQ document.</p>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <textarea id="userInput" placeholder="Ask a question about Fortify Health's work…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 8L2 2L5 8L2 14L14 8Z" fill="white"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+// ─── FAQ Knowledge Base ──────────────────────────────────────────────────────
+const FAQ = [
+
+  // ── ABOUT FORTIFY HEALTH ─────────────────────────────────────────────────
+  {
+    q: "What does Fortify Health do?",
+    audience: "general",
+    keywords: ["fortify health do", "what does fh do", "mission", "work", "activities", "organisation", "about"],
+    a: `<p><strong>Fortify Health</strong> facilitates fortification of wheat flour (chakki atta) at scale in India, supporting mills and governments to launch fortified atta in their distribution channels — with the aim of preventing and reducing iron deficiency anaemia.</p>
+<p>FH operates through three workstreams:<br>
+<strong>Open Market Support</strong> — supporting millers to cost-neutrally fortify chakki atta.<br>
+<strong>Government Partnership Support</strong> — working with state governments to mainstream wheat flour fortification through social safety net programmes.<br>
+<strong>Evidence Generation</strong> — conducting monitoring and evaluation to inform the public about the value of food fortification.</p>`
+  },
+  {
+    q: "Where does Fortify Health operate?",
+    audience: "general",
+    keywords: ["where", "states", "operate", "location", "geography", "maharashtra", "madhya pradesh", "karnataka", "telangana", "region"],
+    a: `<p>Fortify Health currently operates across <strong>16 states</strong> in India. Open market programmes span Maharashtra, Madhya Pradesh, West Bengal, Telangana, Delhi NCR and Karnataka, among others.</p>
+<p>When prioritising states, FH considers anaemia severity, the proportion of atta produced centrally, wheat consumption levels, and (for government work) political characteristics conducive to fortification.</p>`
+  },
+  {
+    q: "Who funds Fortify Health and for how long can FH support operations?",
+    audience: "millers",
+    keywords: ["fund", "funder", "givewell", "good ventures", "silicon valley", "donation", "money", "grant", "how long", "support operation", "days support", "how many days"],
+    a: `<p>Fortify Health is primarily funded by <strong>Silicon Valley Community Fund</strong> and <strong>Good Ventures Foundation</strong>, based on recommendations from <strong>GiveWell</strong> — a US charity evaluator focused on cost-effective interventions.</p>
+<p>In December 2021, GiveWell committed a <strong>USD 8.2 million grant</strong> to support FH's open market and government partnerships programmes. FH has raised almost USD 10 million in committed funding since 2017 and is actively engaging additional funders for the future.</p>
+<p>FH's MoUs with mills are typically for <strong>2-year terms</strong>, renewed at the end of each period. FH's hope and expectation is to continue supporting partner mills in the long run.</p>`
+  },
+  {
+    q: "What are Fortify Health's benefits from this operation?",
+    audience: "millers",
+    keywords: ["fh benefit", "fortify health benefit", "what do you get", "why does fh do this", "profit", "not for profit", "purchase atta", "third party", "third-party", "will fh purchase", "purchase this atta"],
+    a: `<p>Fortify Health is a <strong>not-for-profit organisation</strong> — it does not generate revenue or profit from its partnerships. FH does <strong>not</strong> purchase fortified atta from mills, nor is this a third-party manufacturing arrangement.</p>
+<p>FH's sole motivation is its mission: to enable access to micronutrient-rich wheat flour to reduce iron deficiency anaemia in India. Supporting millers to fortify atta at no cost to them is how FH advances that mission.</p>`
+  },
+
+  // ── MILLER QUALITY QUESTIONS ─────────────────────────────────────────────
+  {
+    q: "Will fortification affect atta quality, shelf life, colour, taste, or customer acceptance?",
+    audience: "millers",
+    keywords: ["affect quality", "shelf life", "colour", "color", "taste", "smell", "sensory", "customer acceptance", "look different", "different taste"],
+    a: `<p>No — if fortification is completed correctly, consumers <strong>will not be able to tell</strong> that flour has been fortified. There is no difference in taste, colour or smell between fortified and unfortified chakki atta.</p>
+<p>Shelf life is also unaffected. The premix FH uses (NaFeEDTA) has a shelf life of 12 months, while chakki atta typically has a shelf life of 3 months — so fortified atta will not go off any faster than unfortified atta.</p>
+<p>Consumers can only identify fortified atta by the <strong>F+ logo</strong> on packaging, which FSSAI requires all producers of fortified flour to display.</p>`
+  },
+  {
+    q: "What should be done if fortified atta fails quality parameters or customer complaints arise?",
+    audience: "millers",
+    keywords: ["fail quality", "quality parameters", "customer complaint", "complaint", "atta fails", "problem", "issue", "what if"],
+    a: `<p>If fortified atta produced by a mill partner does not meet FSSAI standards, <strong>Fortify Health will work closely with the mill</strong> to identify the cause and resolve it. FH's programmes and quality teams regularly visit mills to address issues.</p>
+<p>After corrective steps are taken, FH uses its periodic testing tools — iron spot tests, iCheck and NABL lab testing — to verify whether the atta is back within compliance.</p>
+<p>In the unlikely event that premix affects the atta produced, FH takes full responsibility for working with the mill to identify and fix the problem.</p>`
+  },
+  {
+    q: "Why is fortification important and is it mandatory? What are the acceptable limits and testing requirements?",
+    audience: "millers",
+    keywords: ["mandatory", "important", "government mandate", "acceptable limits", "fssai limits", "testing requirement", "regulation", "compulsory", "nafedt"],
+    a: `<p>Fortification is important because anaemia affects <strong>52% of pregnant women and 67% of children under 5</strong> in India — fortified chakki atta is one of the most cost-effective ways to address this.</p>
+<p>Currently, no state government mandates open market chakki atta fortification, but the Government of India and FSSAI strongly endorse it. FSSAI's <em>Food Safety and Standards (Fortification of Foods) Regulations 2018</em> set the following standards for NaFeEDTA-fortified flour:</p>
+<p>• Iron: <strong>14–21.25 mg/kg</strong><br>
+• Folic acid: <strong>75–125 µg/kg</strong><br>
+• Vitamin B12: <strong>0.75–1.25 µg/kg</strong></p>
+<p>Testing requirements: mills must conduct <strong>iron spot tests</strong> regularly, <strong>iCheck tests</strong> monthly (via FH), and submit samples to a <strong>NABL accredited lab</strong> every six months to maintain +F endorsement.</p>`
+  },
+  {
+    q: "What support will be provided for maintaining fortification quality compliance?",
+    audience: "millers",
+    keywords: ["quality compliance", "compliance support", "maintain quality", "ongoing support", "fh help quality", "who helps", "support quality"],
+    a: `<p>Fortify Health provides <strong>ongoing quality support</strong> throughout the partnership at no cost to the miller:</p>
+<p>• Monthly mill visits by FH team members to check fortification is functioning properly.<br>
+• Training of mill staff on iron spot tests and iCheck procedures.<br>
+• Monthly iCheck testing conducted by FH on composite samples.<br>
+• Support to organise bi-annual NABL lab testing for +F endorsement renewal.<br>
+• Troubleshooting and on-site support if any quality issues arise.</p>`
+  },
+  {
+    q: "How will FH ensure consistency and adequate supply of premix?",
+    audience: "millers",
+    keywords: ["premix supply", "consistency premix", "enough premix", "premix stock", "run out premix", "quality premix", "supplier"],
+    a: `<p>Fortify Health has conducted a thorough evaluation to select high-quality premix suppliers, assessing quality, cost-effectiveness and supplier experience. FH deliberately maintains <strong>relationships with multiple vendors</strong> to avoid over-reliance on any single supplier.</p>
+<p>This means that if one supplier faces disruption or price changes, FH can transition without affecting mill operations. Premix is provided to mill partners <strong>free of charge and on an ongoing basis</strong>.</p>`
+  },
+
+  // ── MILLER PROGRAMME QUESTIONS ───────────────────────────────────────────
+  {
+    q: "What is the demand for fortified atta and how many mills in the region are doing this?",
+    audience: "millers",
+    keywords: ["demand", "how many mills", "other mills", "region", "market demand", "consumer demand", "who else"],
+    a: `<p>Consumer awareness of fortified atta is still growing in India, but demand is increasing — particularly as government campaigns promoting fortification expand. FH's own work to expand availability of clearly labelled fortified atta is building awareness in its operating states.</p>
+<p>FH currently works with <strong>over 200 millers</strong> across 16 states. Millers who fortify gain a competitive edge, as fortification is a low-cost way to differentiate their product. Over time, FH expects consumer demand to drive millers to fortify independently.</p>`
+  },
+  {
+    q: "What financial and equipment support does FH provide to millers?",
+    audience: "millers",
+    keywords: ["financial support", "equipment", "finance", "what does fh provide", "microdoser", "premix free", "cost to miller", "what support"],
+    a: `<p>Fortify Health provides the following at <strong>no cost to the miller</strong>:</p>
+<p>• <strong>Screw microdoser</strong> — installed on the flour conveyor to add premix at a calibrated rate.<br>
+• <strong>Premix</strong> — supplied on an ongoing basis throughout the partnership.<br>
+• <strong>Lab testing costs</strong> — FH covers iCheck and periodic lab testing.<br>
+• <strong>Regulatory support</strong> — assistance with +F endorsement application and label compliance.<br>
+• <strong>Marketing awareness fund</strong> — up to INR 1 lakh per mill for packaging changes and consumer marketing.</p>
+<p>The primary costs a miller bears are staff time for training and any packaging changes beyond the allocated fund.</p>`
+  },
+
+  // ── PROGRAMME / POLICY QUESTIONS ────────────────────────────────────────
+  {
+    q: "What are the recommended daily allowances of iron, vitamin B12 and folate?",
+    audience: "programme",
+    keywords: ["rda", "recommended daily", "allowance", "iron rda", "b12 rda", "folate rda", "daily requirement", "how much iron", "micronutrient need"],
+    a: `<p>The FSSAI-adopted Recommended Daily Allowances (RDAs) for key micronutrients are:</p>
+<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;">
+<thead><tr style="background:#e0f5f7;">
+<th style="padding:6px 8px;text-align:left;border:1px solid #b2e8ed;">Demographic</th>
+<th style="padding:6px 8px;text-align:center;border:1px solid #b2e8ed;">Iron (mg/day)</th>
+<th style="padding:6px 8px;text-align:center;border:1px solid #b2e8ed;">B12 (µg/day)</th>
+<th style="padding:6px 8px;text-align:center;border:1px solid #b2e8ed;">Folate (µg/day)</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:5px 8px;border:1px solid #ddd;">Adult men</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">19</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">2.5</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">300</td></tr>
+<tr style="background:#f9f9f7;"><td style="padding:5px 8px;border:1px solid #ddd;">Adult women (not pregnant/lactating)</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">29</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">2.5</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">220</td></tr>
+<tr><td style="padding:5px 8px;border:1px solid #ddd;">Pregnant women</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">40</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">2.75</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">570</td></tr>
+<tr style="background:#f9f9f7;"><td style="padding:5px 8px;border:1px solid #ddd;">Children aged 1–3 years</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">8</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">1.2</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">110</td></tr>
+<tr><td style="padding:5px 8px;border:1px solid #ddd;">Children aged 7–9 years</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">15</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">2.5</td><td style="text-align:center;padding:5px 8px;border:1px solid #ddd;">170</td></tr>
+</tbody></table>
+<p style="margin-top:8px;font-size:12px;color:#6b6b6b;">Full RDA table available in FH's FAQ document.</p>`
+  },
+  {
+    q: "What are the risks of over-consuming iron through fortified atta?",
+    audience: "programme",
+    keywords: ["over consume", "over-consuming", "over consuming", "too much iron", "excess iron", "iron overload", "overconsumption", "risk iron", "safe amount", "risks of over"],
+    a: `<p>The risk is <strong>extremely low</strong> for most people. Fortified atta provides only 30–50% of an adult's daily iron requirement, making excess intake through diet alone very unlikely.</p>
+<p>The human body naturally regulates iron absorption, reducing uptake when stores are sufficient. Multiple global studies confirm that fortification within FSSAI-prescribed standards does not lead to harmful iron levels.</p>
+<p>Those with <strong>thalassemia major</strong> should consume fortified foods only under medical supervision; those with <strong>sickle cell anaemia</strong> are advised to avoid iron-fortified foods, per FSSAI guidelines.</p>`
+  },
+  {
+    q: "Are there safety concerns with long-term consumption of fortified atta by children?",
+    audience: "programme",
+    keywords: ["children safe", "long term", "safe for children", "kids", "child", "long-term consumption", "side effects children"],
+    a: `<p>No significant risks have been identified when fortification follows recommended standards. Fortified wheat flour contributes modestly (30–50% RDA), preventing deficiency without causing excess.</p>
+<p>The body absorbs limited iron daily, and typical Indian diets further reduce absorption due to inhibitors like phytates. Long-term global evidence shows no adverse effects at fortification levels. Minor side effects only occur at high therapeutic doses — not through consuming fortified foods.</p>`
+  },
+  {
+    q: "What is the cumulative impact of consuming multiple fortified staples?",
+    audience: "programme",
+    keywords: ["multiple staples", "cumulative", "rice fortified", "salt fortified", "overlap", "combined fortification", "several fortified"],
+    a: `<p>Combining fortified staples (rice, wheat flour, salt) helps bridge widespread iron deficiency without exceeding safe limits. In Madhya Pradesh, for example, current dietary intake is below requirements, contributing to high anaemia rates — so multiple fortified staples collectively move people closer to their RDA.</p>
+<p>When national standards are set, the FSSAI takes potential overlap between fortified foods into account to ensure total micronutrient intake remains within safe bounds. A 2022 study confirmed that large-scale food fortification can be safely implemented in India given current dietary intake patterns.</p>
+<p>Implementation can be aligned with existing systems by integrating fortification at mills, maintaining proper storage (controlled conditions, FIFO), and ensuring quality through regular testing.</p>`
+  },
+  {
+    q: "What is the cost of fortifying wheat flour and how cost-effective is it?",
+    audience: "programme",
+    keywords: ["cost fortification", "cost of fortifying", "how much cost", "price fortification", "cost effective", "cost-effective", "rupee", "per kg", "cheap", "value for money", "economic", "how cost-effective"],
+    a: `<p>Fortification is <strong>highly cost-effective</strong>. It adds only <strong>₹0.10–0.16 per kg</strong> of flour — less than 1% of total flour cost — translating to approximately <strong>₹0.01 per child per day</strong>.</p>
+<p>This is far cheaper than alternatives such as ICDS supplementation or treatment for severe acute malnutrition (SAM). It delivers key nutrients through existing meals without requiring additional behaviour change.</p>
+<p>GiveWell's cost effectiveness analysis estimates FH's weighted-average impact at <strong>9.4 times the value</strong> of unconditional cash transfers. Globally, fortification is among the most efficient public health interventions, generating high returns for every rupee invested.</p>`
+  },
+
+  // ── GENERAL PROGRAMME ────────────────────────────────────────────────────
+  {
+    q: "How widespread is anaemia in India?",
+    audience: "general",
+    keywords: ["anaemia india", "anemia india", "prevalence", "widespread", "rates", "nfhs", "children", "women", "how bad"],
+    a: `<p>Anaemia is a major public health concern in India. According to NFHS-5 (2021), <strong>67% of children aged 6–59 months</strong> and <strong>52% of pregnant women</strong> are anaemic — well above the global average of ~33%.</p>
+<p>Anaemia prevalence has not clearly declined: it actually <em>increased</em> compared to NFHS-4 (2015–16), with anaemia in children under five rising by 8.5 percentage points.</p>`
+  },
+  {
+    q: "How does Fortify Health monitor quality?",
+    audience: "general",
+    keywords: ["monitor", "quality", "testing", "icheck", "iron spot", "nabl", "laboratory", "standards", "fssai", "check flour"],
+    a: `<p>FH uses a multi-layered quality monitoring system:</p>
+<p><strong>Iron spot tests</strong> — qualitative, real-time checks conducted by trained mill staff.<br>
+<strong>iCheck tests</strong> — quantitative spectrophotometric tests conducted by FH at least monthly per mill.<br>
+<strong>NABL accredited lab testing</strong> — mandatory every six months to maintain +F endorsement.</p>
+<p>FH team members visit each mill monthly and collect data via SurveyCTO to track fortification performance across all partners.</p>`
+  },
+  {
+    q: "What government programmes does Fortify Health work with?",
+    audience: "programme",
+    keywords: ["government", "partnership", "ssnp", "safety net", "pm poshan", "midday meal", "pds", "icds", "state government"],
+    a: `<p>FH works with state governments to integrate fortified chakki atta into social safety net programmes. The main programmes are:</p>
+<p><strong>PM POSHAN</strong> (Midday Meal Scheme) — hot meals to children aged 6–14 in public schools.<br>
+<strong>Public Distribution System (PDS)</strong> — staple foods to eligible households (~75% of rural India).<br>
+<strong>ICDS</strong> — nutrition support to children under six and pregnant/lactating mothers.</p>
+<p>FH provides financial, technical and quality assurance support to government partners <strong>at no charge</strong>.</p>`
+  }
+];
+
+// ─── Matching logic ──────────────────────────────────────────────────────────
+function findAnswer(question) {
+  const q = question.toLowerCase();
+  let bestMatch = null;
+  let bestScore = 0;
+
+  for (const entry of FAQ) {
+    let score = 0;
+    for (const kw of entry.keywords) {
+      if (q.includes(kw)) score += kw.split(" ").length * 2;
+    }
+    // Also check question words
+    const qWords = entry.q.toLowerCase().split(" ");
+    for (const w of qWords) {
+      if (w.length > 4 && q.includes(w)) score += 1;
+    }
+    if (score > bestScore) { bestScore = score; bestMatch = entry; }
+  }
+
+  if (bestScore >= 2) return { found: true, answer: bestMatch.a };
+  return { found: false };
+}
+
+// ─── UI ───────────────────────────────────────────────────────────────────────
+function appendMessage(role, html) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = role === 'bot' ? '🌾' : 'U';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.innerHTML = html;
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'typing-indicator';
+  div.id = 'typing';
+  div.innerHTML = `<div class="msg-avatar" style="width:28px;height:28px;background:linear-gradient(135deg,#0097A7,#4BACC6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;">🌾</div>
+    <div class="typing-dots"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  appendMessage('user', `<p>${escapeHtml(text)}</p>`);
+  input.value = '';
+  autoResize(input);
+  document.getElementById('sendBtn').disabled = true;
+
+  showTyping();
+
+  setTimeout(() => {
+    removeTyping();
+    const result = findAnswer(text);
+    if (result.found) {
+      appendMessage('bot', result.answer);
+      logExchange(text, result.answer);
+    } else {
+      const flagMsg = `<p>I don't have a standard answer for that question in the current FAQ database.</p>
+        <div class="flag-notice">⚑ <strong>Flagged for the team.</strong> This question has been logged and will be reviewed by Fortify Health staff, who will add a standardised response to the FAQ.</div>`;
+      appendMessage('bot', flagMsg);
+      logExchange(text, 'Outside current FAQ scope — flagged for the FH team to provide a standardised answer.');
+    }
+    document.getElementById('sendBtn').disabled = false;
+  }, 900 + Math.random() * 500);
+}
+
+function askQuestion(q) {
+  document.getElementById('userInput').value = q;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+
+// ── Session transcript for PDF ─────────────────────────────────────────────
+const sessionLog = [];
+
+function logExchange(question, answerHtml) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = answerHtml;
+  sessionLog.push({ q: question, a: tmp.innerText || tmp.textContent || '' });
+}
+
+function downloadPDF() {
+  if (!sessionLog.length) {
+    alert('Ask at least one question first \u2014 the PDF will summarise your session.');
+    return;
+  }
+
+  const PW = 595, PH = 842, ML = 50, MR = 50, TW = PW - ML - MR;
+
+  function rgb(c) { return c[0].toFixed(3)+' '+c[1].toFixed(3)+' '+c[2].toFixed(3); }
+
+  function esc(s) {
+    return String(s)
+      .replace(/\\/g,'\\\\')
+      .replace(/\(/g,'\\(')
+      .replace(/\)/g,'\\)')
+      .replace(/[^\x20-\x7E]/g,'?');
+  }
+
+  function wrap(txt, maxW, fs) {
+    const cpl = Math.floor(maxW / (fs * 0.52));
+    const words = String(txt).split(' ');
+    const lines = [];
+    let cur = '';
+    for (const w of words) {
+      const test = (cur + ' ' + w).trim();
+      if (test.length <= cpl) { cur = test; }
+      else { if (cur) lines.push(cur); cur = w; }
+    }
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [''];
+  }
+
+  const TEAL=[0,0.592,0.655], NAVY=[0.122,0.286,0.49];
+  const MUTED=[0.42,0.42,0.42], OFFWH=[0.933,0.925,0.882];
+  const WHITE=[1,1,1], BLACK=[0.102,0.102,0.102];
+
+  // Group questions by category
+  const stateKw=['rda','recommended daily','allowance','iron','b12','folate','over-consuming','over consuming','risks of over','too much iron','excess iron','safe','children','cumulative','staple','cost of fortifying','cost-effective','how cost-effective'];
+  const progKw=['demand','mills are doing','region','finance','equipment','how long','fh benefit','purchase','third-party','third party','will fh purchase','fund','support our fortification'];
+  const qualKw=['quality','shelf life','colour','color','taste','customer acceptance','complaint','mandatory','fortification limits','testing requirement','quality compliance','premix'];
+
+  function classify(q) {
+    const lq = q.toLowerCase();
+    let sc=0, pc=0, qc=0;
+    stateKw.forEach(k => { if (lq.includes(k)) sc++; });
+    progKw.forEach(k  => { if (lq.includes(k)) pc++; });
+    qualKw.forEach(k  => { if (lq.includes(k)) qc++; });
+    if (sc >= pc && sc >= qc) return 'state';
+    if (pc >= qc) return 'programme';
+    return 'quality';
+  }
+
+  const groups = { state:[], programme:[], quality:[], other:[] };
+  sessionLog.forEach(item => { groups[classify(item.q)].push(item); });
+
+  const groupDefs = [
+    { key:'state',      label:'State Partnerships Advocacy' },
+    { key:'programme',  label:'Programme Questions' },
+    { key:'quality',    label:'Quality Questions' },
+    { key:'other',      label:'Other Questions' },
+  ];
+
+  // Build page drawing commands
+  const allPages = [];
+  let cmds = [];
+  let y = PH - 20;
+
+  function newPage() { allPages.push(cmds); cmds = []; y = PH - 20; }
+  function checkY(n) { if (y - n < 40) newPage(); }
+
+  function fillR(x, ry, w, h, c) {
+    cmds.push(rgb(c) + ' rg ' + x + ' ' + ry + ' ' + w + ' ' + h + ' re f');
+  }
+  function drawLine(x1, y1, x2, y2, c) {
+    cmds.push(rgb(c) + ' RG 0.4 w ' + x1 + ' ' + y1 + ' m ' + x2 + ' ' + y2 + ' l S');
+  }
+  function txt(s, x, ty, sz, c, bold) {
+    const fn = bold ? '/F2' : '/F1';
+    cmds.push('BT ' + fn + ' ' + sz + ' Tf ' + rgb(c) + ' rg ' + x + ' ' + ty + ' Td (' + esc(s) + ') Tj ET');
+  }
+  function txtBlock(lines, x, startY, sz, c, bold, lhOpt) {
+    const lh = lhOpt || sz * 1.45;
+    lines.forEach(function(ln, i) { txt(ln, x, startY - i * lh, sz, c, bold); });
+    return lines.length * lh;
+  }
+
+  // Header
+  const today = new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+  fillR(0, PH - 52, PW, 52, TEAL);
+  txt('Fortify Health', ML, PH - 22, 20, WHITE, true);
+  txt('Programme Q&A Session Summary', ML, PH - 38, 11, [0.8,0.95,0.97], false);
+  txt(today, PW - MR, PH - 38, 9, [0.8,0.95,0.97], false);
+  y = PH - 62;
+
+  fillR(ML, y - 18, TW, 18, OFFWH);
+  txt('Internal use only  |  Standardised responses for FH team members  |  fortifyhealth.global', ML + 8, y - 11, 8, MUTED, false);
+  y -= 30;
+
+  let qNum = 1;
+  groupDefs.forEach(function(gd) {
+    const items = groups[gd.key];
+    if (!items.length) return;
+    checkY(40);
+    fillR(ML, y - 22, TW, 22, TEAL);
+    txt(gd.label, ML + 8, y - 14, 11, WHITE, true);
+    y -= 30;
+    items.forEach(function(item) {
+      const qLines = wrap(item.q, TW - 30, 10);
+      checkY(qLines.length * 16 + 60);
+      fillR(ML, y - 16, 18, 16, NAVY);
+      txt('Q' + qNum, ML + 3, y - 11, 8, WHITE, true);
+      txtBlock(qLines, ML + 24, y - 5, 10, NAVY, true, 14);
+      y -= qLines.length * 14 + 6;
+      const aLines = wrap(item.a, TW - 10, 9.5);
+      checkY(aLines.length * 13 + 8);
+      txtBlock(aLines, ML + 6, y, 9.5, BLACK, false, 13);
+      y -= aLines.length * 13 + 8;
+      drawLine(ML, y + 2, PW - MR, y + 2, [0.85,0.85,0.85]);
+      y -= 10;
+      qNum++;
+    });
+    y -= 6;
+  });
+  allPages.push(cmds);
+
+  // Footer on every page
+  allPages.forEach(function(pc, pi) {
+    pc.push(rgb(TEAL) + ' rg 0 0 ' + PW + ' 24 re f');
+    pc.push('BT /F1 7.5 Tf ' + rgb(WHITE) + ' rg ' + ML + ' 9 Td (Fortify Health  |  Internal use only  |  fortifyhealth.global) Tj ET');
+    pc.push('BT /F1 7.5 Tf ' + rgb(WHITE) + ' rg ' + (PW - MR) + ' 9 Td (Page ' + (pi+1) + ' of ' + allPages.length + ') Tj ET');
+  });
+
+  // Assemble PDF - using string concatenation throughout, no raw newlines in literals
+  const NL = '\n';
+  const F1 = 3, F2 = 4, CB = 5, PB = 5 + allPages.length;
+  const offMap = {};
+  let pdf = '%PDF-1.4' + NL;
+
+  function wObj(n, content) {
+    offMap[n] = pdf.length;
+    pdf += n + ' 0 obj' + NL + content + NL + 'endobj' + NL;
+  }
+
+  wObj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+  wObj(2, '<< /Type /Pages /Kids [' + allPages.map(function(_,i){ return (PB+i)+' 0 R'; }).join(' ') + '] /Count ' + allPages.length + ' >>');
+  wObj(F1, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  wObj(F2, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+
+  allPages.forEach(function(pc, i) {
+    const s = pc.join(NL);
+    wObj(CB + i, '<< /Length ' + s.length + ' >>' + NL + 'stream' + NL + s + NL + 'endstream');
+  });
+
+  allPages.forEach(function(_, i) {
+    wObj(PB + i,
+      '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] ' +
+      '/Contents ' + (CB+i) + ' 0 R ' +
+      '/Resources << /Font << /F1 ' + F1 + ' 0 R /F2 ' + F2 + ' 0 R >> >> >>'
+    );
+  });
+
+  const xp = pdf.length;
+  const no = PB + allPages.length;
+  pdf += 'xref' + NL + '0 ' + (no+1) + NL + '0000000000 65535 f ' + NL;
+  for (let i = 1; i <= no; i++) {
+    pdf += String(offMap[i]).padStart(10,'0') + ' 00000 n ' + NL;
+  }
+  pdf += 'trailer' + NL + '<< /Size ' + (no+1) + ' /Root 1 0 R >>' + NL + 'startxref' + NL + xp + NL + '%%EOF';
+
+  const bytes = new Uint8Array(pdf.length);
+  for (let i = 0; i < pdf.length; i++) bytes[i] = pdf.charCodeAt(i) & 0xff;
+  const blob = new Blob([bytes], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'FH_Programme_QA_Summary.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
